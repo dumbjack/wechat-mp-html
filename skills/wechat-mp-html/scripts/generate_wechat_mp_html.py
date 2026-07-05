@@ -44,55 +44,55 @@ LIMIT_MAX_CHARS = 20000
 LIMIT_MAX_BYTES = 1024 * 1024
 
 STYLE_CONTAINER = (
-    "margin:0 auto;padding:0 16px 28px;box-sizing:border-box;"
-    "font-size:16px;line-height:1.82;color:#2b2b2b;background:#ffffff;"
+    "margin:0 auto;padding:0 16px 28px;"
+    "font-size:16px;line-height:1.82;color:#333;background:#fff;"
 )
 STYLE_TITLE_CARD = (
-    "margin:0 0 18px;padding:22px 20px;border-radius:8px;background:#111;"
-    "box-sizing:border-box;color:#fff;"
+    "margin:0 0 18px;padding:22px 20px;border-radius:8px;background:#111;color:#fff;"
 )
 STYLE_TITLE = "margin:0;font-size:24px;line-height:1.35;color:#fff;font-weight:700;"
 STYLE_SUBTITLE = "margin:10px 0 0;font-size:14px;line-height:1.7;color:#d6d6d6;"
 STYLE_META = "margin:12px 0 0;font-size:13px;line-height:1.6;color:#b8b8b8;"
 STYLE_CONCLUSION = (
     "margin:0 0 22px;padding:14px 16px;border-left:4px solid #111;"
-    "border-radius:6px;background:#f7f7f7;box-sizing:border-box;"
+    "border-radius:6px;background:#f7f7f7;"
 )
-STYLE_P = "margin:0 0 16px;font-size:16px;line-height:1.85;color:#2b2b2b;"
+STYLE_P = "margin:0 0 16px;font-size:16px;line-height:1.8;"
 STYLE_STRONG = "font-weight:700;color:#111;"
-STYLE_SECTION = "margin:30px 0 0;box-sizing:border-box;"
-STYLE_SECTION_HEAD = "margin:0 0 18px;text-align:center;box-sizing:border-box;"
+STYLE_SECTION = "margin:30px 0 0;"
+STYLE_SECTION_HEAD = "margin:0 0 18px;text-align:center;"
 STYLE_NUM = (
     "display:inline-block;margin:0 0 10px;padding:3px 12px;border-radius:999px;"
     "background:#111;color:#fff;font-size:13px;line-height:1.5;font-weight:700;"
-    "letter-spacing:0;"
 )
 STYLE_SECTION_TITLE = (
     "display:block;margin:0;font-size:19px;line-height:1.45;color:#111;"
     "font-weight:700;text-align:center;"
 )
+STYLE_SUBHEADING = (
+    "margin:24px 0 12px;padding:0 0 0 10px;border-left:3px solid #111;"
+    "font-size:16px;line-height:1.7;color:#111;font-weight:700;"
+)
 STYLE_DATA_CARD = (
     "margin:0 0 18px;padding:15px 16px;border-radius:8px;background:#f8f8f8;"
-    "box-sizing:border-box;"
 )
-STYLE_DATA_ROW = "margin:0 0 9px;font-size:15px;line-height:1.75;color:#333;"
+STYLE_DATA_ROW = "margin:0 0 9px;font-size:15px;line-height:1.75;"
 STYLE_HIGHLIGHT = (
     "margin:0 0 18px;padding:15px 16px;border:1px solid #f0dfc2;"
-    "border-radius:8px;background:#fff9ef;box-sizing:border-box;"
+    "border-radius:8px;background:#fff9ef;"
 )
 STYLE_IMAGE = (
     "margin:0 0 18px;padding:13px 15px;border-radius:8px;background:#f7f7f7;"
-    "color:#666;font-size:15px;line-height:1.75;text-align:center;box-sizing:border-box;"
+    "color:#666;font-size:15px;line-height:1.75;text-align:center;"
 )
-STYLE_LIST = "margin:0 0 18px;padding-left:22px;color:#2b2b2b;box-sizing:border-box;"
-STYLE_LI = "margin:0 0 8px;font-size:16px;line-height:1.8;color:#2b2b2b;"
+STYLE_LIST = "margin:0 0 18px;padding-left:22px;"
+STYLE_LI = "margin:0 0 8px;font-size:16px;line-height:1.8;"
 STYLE_QUOTE = (
     "margin:0 0 18px;padding:12px 16px;border-left:4px solid #d8d8d8;"
-    "background:#f8f8f8;color:#555;box-sizing:border-box;"
+    "background:#f8f8f8;color:#555;"
 )
 STYLE_CLOSING = (
-    "margin:34px 0 0;padding:18px 18px;border-radius:8px;background:#111;"
-    "box-sizing:border-box;color:#fff;"
+    "margin:34px 0 0;padding:18px 18px;border-radius:8px;background:#111;color:#fff;"
 )
 STYLE_CLOSING_LABEL = "margin:0 0 8px;font-size:14px;line-height:1.7;color:#d6d6d6;"
 STYLE_CLOSING_Q = "margin:0;font-size:17px;line-height:1.75;color:#fff;font-weight:700;"
@@ -213,6 +213,13 @@ def render_highlights(values: Any) -> str:
     return "\n".join(blocks)
 
 
+def render_subheading(text: Any) -> str:
+    body = render_inline(text)
+    if not body:
+        return ""
+    return f'<p style="{STYLE_SUBHEADING}">{body}</p>'
+
+
 def render_images(values: Any) -> str:
     blocks: list[str] = []
     for value in as_list(values):
@@ -240,51 +247,99 @@ def render_section(section: dict[str, Any], index: int) -> str:
     title = clean_text(section.get("title") or section.get("heading"))
     lines = [f'<section style="{STYLE_SECTION}">']
     if title:
+        number_setting = section.get("number", section.get("show_number", True))
+        if number_setting is False:
+            number_markup = ""
+        elif isinstance(number_setting, str):
+            number_markup = f'<span style="{STYLE_NUM}">{render_inline(number_setting)}</span>'
+        else:
+            number_markup = f'<span style="{STYLE_NUM}">{index:02d}</span>'
         lines.extend(
             [
                 f'<section style="{STYLE_SECTION_HEAD}">',
-                f'<span style="{STYLE_NUM}">{index:02d}</span>',
+                number_markup,
                 f'<span style="{STYLE_SECTION_TITLE}">{render_inline(title)}</span>',
                 "</section>",
             ]
         )
 
-    for paragraph in split_paragraphs(section.get("paragraphs") or section.get("body")):
-        lines.append(p(paragraph))
+    blocks = section.get("blocks")
+    if blocks:
+        for block in as_list(blocks):
+            rendered = render_block(block)
+            if rendered:
+                lines.append(rendered)
+    else:
+        for paragraph in split_paragraphs(section.get("paragraphs") or section.get("body")):
+            lines.append(p(paragraph))
 
-    quote = clean_text(section.get("quote") or section.get("blockquote"))
-    if quote:
-        lines.append(f'<blockquote style="{STYLE_QUOTE}">{p(quote, "margin:0;font-size:15px;line-height:1.8;color:#555;")}</blockquote>')
+        quote = clean_text(section.get("quote") or section.get("blockquote"))
+        if quote:
+            lines.append(f'<blockquote style="{STYLE_QUOTE}">{p(quote, "margin:0;font-size:15px;line-height:1.8;color:#555;")}</blockquote>')
 
-    data = section.get("data", section.get("data_cards"))
-    rendered_data = render_data_card(data)
-    if rendered_data:
-        lines.append(rendered_data)
+        data = section.get("data", section.get("data_cards"))
+        rendered_data = render_data_card(data)
+        if rendered_data:
+            lines.append(rendered_data)
 
-    highlights = (
-        section.get("highlights")
-        or section.get("highlight_cards")
-        or section.get("judgement_cards")
-        or section.get("judgment_cards")
-    )
-    rendered_highlights = render_highlights(highlights)
-    if rendered_highlights:
-        lines.append(rendered_highlights)
+        highlights = (
+            section.get("highlights")
+            or section.get("highlight_cards")
+            or section.get("judgement_cards")
+            or section.get("judgment_cards")
+        )
+        rendered_highlights = render_highlights(highlights)
+        if rendered_highlights:
+            lines.append(rendered_highlights)
 
-    bullets = render_list(section.get("bullets"))
-    if bullets:
-        lines.append(bullets)
+        bullets = render_list(section.get("bullets"))
+        if bullets:
+            lines.append(bullets)
 
-    ordered = render_list(section.get("ordered") or section.get("steps"), ordered=True)
-    if ordered:
-        lines.append(ordered)
+        ordered = render_list(section.get("ordered") or section.get("steps"), ordered=True)
+        if ordered:
+            lines.append(ordered)
 
-    images = render_images(section.get("images") or section.get("image_placeholders"))
-    if images:
-        lines.append(images)
+        images = render_images(section.get("images") or section.get("image_placeholders"))
+        if images:
+            lines.append(images)
 
     lines.append("</section>")
     return "\n".join(lines)
+
+
+def render_block(block: Any) -> str:
+    if isinstance(block, str):
+        return p(block)
+    if not isinstance(block, dict):
+        return ""
+    block_type = clean_text(block.get("type") or block.get("kind")).lower()
+    if not block_type:
+        if "subheading" in block or "heading" in block:
+            block_type = "subheading"
+        elif "data" in block or "items" in block:
+            block_type = "data"
+        elif "highlight" in block:
+            block_type = "highlight"
+        else:
+            block_type = "paragraph"
+
+    if block_type in {"subheading", "h3", "minor-heading"}:
+        return render_subheading(block.get("text") or block.get("subheading") or block.get("heading"))
+    if block_type in {"data", "data-card", "data_cards"}:
+        return render_data_card(block.get("items") or block.get("data") or block.get("rows"))
+    if block_type in {"highlight", "highlight-card", "judgment", "judgement"}:
+        return render_highlights([block.get("text") or block.get("highlight")])
+    if block_type in {"quote", "blockquote"}:
+        quote = clean_text(block.get("text") or block.get("quote"))
+        return f'<blockquote style="{STYLE_QUOTE}">{p(quote, "margin:0;font-size:15px;line-height:1.8;color:#555;")}</blockquote>' if quote else ""
+    if block_type in {"list", "bullets", "ul"}:
+        return render_list(block.get("items") or block.get("bullets"))
+    if block_type in {"ordered", "steps", "ol"}:
+        return render_list(block.get("items") or block.get("steps"), ordered=True)
+    if block_type in {"image", "images"}:
+        return render_images(block.get("items") or block.get("images") or block.get("text"))
+    return p(block.get("text") or block.get("paragraph") or block.get("body"))
 
 
 def render_closing(article: dict[str, Any]) -> str:

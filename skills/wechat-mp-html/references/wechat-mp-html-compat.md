@@ -93,7 +93,10 @@ Use a dark title card, a gray conclusion card with a dark left border, centered 
 - Do not create new titles, subtitles, section headings, conclusions, highlighted judgments, labels, closing questions, disclaimers, or transitions unless the exact text already appears in the source article or the user explicitly provides it.
 - Preserve paragraph boundaries from the source. Do not split or merge paragraphs for rhythm.
 - Preserve existing bold emphasis only; do not add new bold emphasis.
+- Style existing level-3 headings as compact subheadings when the source explicitly marks them.
+- Style existing unnumbered closing headings such as "结语" as unnumbered section titles.
 - Convert Markdown tables into data cards only when every cell's text is preserved verbatim.
+- Convert compact source data groups into data cards only when every line's text is preserved verbatim and the original order is retained.
 - Replace existing external image references with text placeholders such as `【图片：这里放 xxx 图】`; do not invent image needs.
 - If finance, investing, crypto, or market language seems risky, warn the user outside the generated article instead of changing the article text.
 

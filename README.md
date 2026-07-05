@@ -44,6 +44,7 @@ The source snippet is intentionally conservative:
 - mainly `section`, `p`, `span`, `strong`, `br`
 - no `script`, `style`, `table`, `iframe`, `form`, media tags, or external images
 - image needs become placeholders such as `【图片：这里放 xxx 图】`
+- existing level-3 headings and data groups can be styled without changing their text
 
 The preview file may contain CSS and JavaScript, but the toolbar is outside the copied article body.
 
@@ -74,5 +75,5 @@ cp -R skills/wechat-mp-html ~/.codex/skills/
 
 - 不改写、不润色、不总结、不扩写、不翻译正文。
 - 不新增标题、小标题、结论、互动问题、免责声明或数据。
-- 如果原文有表格，可以改成卡片，但必须逐字保留表格文字。
+- 如果原文有三级小标题、表格或数据组，可以样式化或改成卡片，但必须逐字保留原文文字。
 - 正文源码全部使用内联样式。

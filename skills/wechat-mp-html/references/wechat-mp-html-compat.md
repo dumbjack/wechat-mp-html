@@ -1,6 +1,6 @@
 # WeChat MP HTML Compatibility
 
-Use these rules when generating article HTML for the WeChat Official Account backend, 135 Editor, Xiumi, Yiban, or source-mode editors.
+Use these rules when generating article HTML for the WeChat Official Account backend, 135 Editor, Xiumi, Yiban, or source-mode editors. The article text is immutable: preserve original wording exactly.
 
 ## Source Facts
 
@@ -85,17 +85,17 @@ Avoid external CSS, complex selectors, animation, media queries, and complex pos
 - Base font size: around `16px`
 - Line height: `1.75` to `1.9`
 
-Use a dark title card, a gray conclusion card with a dark left border, centered numbered section headings, gray data cards, pale-yellow judgment cards, and a dark closing question card.
+Use a dark title card, a gray conclusion card with a dark left border, centered numbered section headings, gray data cards, pale-yellow judgment cards, and a dark closing question card only when the source article already contains the corresponding text.
 
 ## Content Rules
 
-- Keep paragraphs short and mobile-readable.
-- Keep important claims as standalone paragraphs.
-- Bold only the core judgment or contradiction.
-- Convert Markdown tables into data cards.
-- Do not add unconfirmed numbers.
-- Use restrained language for finance, investing, crypto, and market forecasts.
-- Replace external image needs with text placeholders such as `【图片：这里放 xxx 图】`.
+- Do not rewrite, summarize, polish, shorten, expand, translate, reorder, or add article content.
+- Do not create new titles, subtitles, section headings, conclusions, highlighted judgments, labels, closing questions, disclaimers, or transitions unless the exact text already appears in the source article or the user explicitly provides it.
+- Preserve paragraph boundaries from the source. Do not split or merge paragraphs for rhythm.
+- Preserve existing bold emphasis only; do not add new bold emphasis.
+- Convert Markdown tables into data cards only when every cell's text is preserved verbatim.
+- Replace existing external image references with text placeholders such as `【图片：这里放 xxx 图】`; do not invent image needs.
+- If finance, investing, crypto, or market language seems risky, warn the user outside the generated article instead of changing the article text.
 
 ## Preview Copy Rules
 

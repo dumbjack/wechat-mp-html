@@ -151,13 +151,16 @@ def split_paragraphs(items: Any) -> list[str]:
 
 
 def render_title_card(article: dict[str, Any]) -> str:
-    title = clean_text(article.get("title")) or "未命名文章"
+    title = clean_text(article.get("title"))
     subtitle = clean_text(article.get("subtitle"))
     meta = clean_text(article.get("meta") or article.get("byline"))
+    if not title and not subtitle and not meta:
+        return ""
     lines = [
         f'<section style="{STYLE_TITLE_CARD}">',
-        f'<p style="{STYLE_TITLE}">{render_inline(title)}</p>',
     ]
+    if title:
+        lines.append(f'<p style="{STYLE_TITLE}">{render_inline(title)}</p>')
     if subtitle:
         lines.append(f'<p style="{STYLE_SUBTITLE}">{render_inline(subtitle)}</p>')
     if meta:
@@ -170,7 +173,6 @@ def render_conclusion(article: dict[str, Any]) -> str:
     conclusion = clean_text(
         article.get("conclusion")
         or article.get("one_sentence_conclusion")
-        or article.get("summary")
     )
     if not conclusion:
         return ""
@@ -235,14 +237,17 @@ def render_list(values: Any, ordered: bool = False) -> str:
 
 
 def render_section(section: dict[str, Any], index: int) -> str:
-    title = clean_text(section.get("title") or section.get("heading") or f"第 {index:02d} 节")
-    lines = [
-        f'<section style="{STYLE_SECTION}">',
-        f'<section style="{STYLE_SECTION_HEAD}">',
-        f'<span style="{STYLE_NUM}">{index:02d}</span>',
-        f'<span style="{STYLE_SECTION_TITLE}">{render_inline(title)}</span>',
-        "</section>",
-    ]
+    title = clean_text(section.get("title") or section.get("heading"))
+    lines = [f'<section style="{STYLE_SECTION}">']
+    if title:
+        lines.extend(
+            [
+                f'<section style="{STYLE_SECTION_HEAD}">',
+                f'<span style="{STYLE_NUM}">{index:02d}</span>',
+                f'<span style="{STYLE_SECTION_TITLE}">{render_inline(title)}</span>',
+                "</section>",
+            ]
+        )
 
     for paragraph in split_paragraphs(section.get("paragraphs") or section.get("body")):
         lines.append(p(paragraph))
@@ -284,22 +289,22 @@ def render_section(section: dict[str, Any], index: int) -> str:
 
 def render_closing(article: dict[str, Any]) -> str:
     closing = article.get("closing")
-    label = "最后留一个问题："
+    label = ""
     question = ""
     if isinstance(closing, dict):
-        label = clean_text(closing.get("label")) or label
+        label = clean_text(closing.get("label"))
         question = clean_text(closing.get("question") or closing.get("text"))
     else:
         question = clean_text(closing)
     question = clean_text(article.get("closing_question")) or question
     if not question:
         return ""
-    return (
-        f'<section style="{STYLE_CLOSING}">'
-        f'<p style="{STYLE_CLOSING_LABEL}">{render_inline(label)}</p>'
-        f'<p style="{STYLE_CLOSING_Q}">{render_inline(question)}</p>'
-        f"</section>"
-    )
+    lines = [f'<section style="{STYLE_CLOSING}">']
+    if label:
+        lines.append(f'<p style="{STYLE_CLOSING_LABEL}">{render_inline(label)}</p>')
+    lines.append(f'<p style="{STYLE_CLOSING_Q}">{render_inline(question)}</p>')
+    lines.append("</section>")
+    return "".join(lines)
 
 
 def render_snippet(article: dict[str, Any]) -> str:

@@ -33,12 +33,13 @@ English:
 Use $wechat-mp-html to convert this article into WeChat Official Account HTML.
 ```
 
-The skill asks Codex to preserve the article's facts and viewpoint, structure it into short mobile-readable sections, and call the bundled generator.
+The skill asks Codex to preserve the article text exactly and only add WeChat-compatible HTML wrappers, inline styles, and preview copy controls.
 
 ## WeChat Format
 
 The source snippet is intentionally conservative:
 
+- no article wording changes
 - inline CSS only
 - mainly `section`, `p`, `span`, `strong`, `br`
 - no `script`, `style`, `table`, `iframe`, `form`, media tags, or external images
@@ -71,8 +72,7 @@ cp -R skills/wechat-mp-html ~/.codex/skills/
 
 ## 重点
 
-- 不大幅改写原文观点。
-- 不新增未经确认的数据。
-- 财经、投资、加密货币判断保持克制。
-- 表格数据改成卡片。
+- 不改写、不润色、不总结、不扩写、不翻译正文。
+- 不新增标题、小标题、结论、互动问题、免责声明或数据。
+- 如果原文有表格，可以改成卡片，但必须逐字保留表格文字。
 - 正文源码全部使用内联样式。

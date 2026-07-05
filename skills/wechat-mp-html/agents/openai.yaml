@@ -1,0 +1,4 @@
+interface:
+  display_name: "WeChat MP HTML"
+  short_description: "Generate clean WeChat article HTML"
+  default_prompt: "Use $wechat-mp-html to convert this article into WeChat Official Account HTML."

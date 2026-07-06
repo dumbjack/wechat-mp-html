@@ -7,18 +7,17 @@ description: Generate clean, mobile-friendly WeChat Official Account article HTM
 
 ## Overview
 
-Convert an article into a WeChat-safe HTML source snippet and a browser preview file with copy/select buttons. Preserve the original article text exactly; only add HTML wrappers, inline styles, and copy/select preview controls.
+Convert an article into a browser preview HTML file with copy/select buttons for WeChat Official Account publishing. Preserve the original article text exactly; only add HTML wrappers, inline styles, and copy/select preview controls. Generate a standalone source snippet only when the user asks for source mode, 135 Editor, Xiumi, Yiban, API publishing, or debugging.
 
 ## Workflow
 
 1. Read `references/wechat-mp-html-compat.md` before generating output.
 2. Preserve all article wording exactly. Do not rewrite, summarize, polish, shorten, expand, translate, or add any article content.
 3. Convert the article into structured JSON for `scripts/generate_wechat_mp_html.py`.
-4. Run the generator to create:
-   - `公众号 HTML 预览版.html`
-   - `公众号源码片段.txt`
-5. Inspect the generator warnings and fix the JSON/content if it reports forbidden tags, external images, or length risk.
-6. Tell the user where the files are and that the preview page's copy button copies only the article body.
+4. Run the generator to create `公众号 HTML 预览版.html` by default.
+5. Use `--outputs both` or `--outputs snippet` only when the user explicitly asks for a source snippet, 135 Editor, Xiumi, Yiban, source-mode copy, API publishing, or debugging.
+6. Inspect the generator warnings and fix the JSON/content if it reports forbidden tags, external images, or length risk.
+7. Tell the user where the preview HTML is and that its copy button copies only the article body for pasting into the WeChat web backend.
 
 ## Non-Modification Contract
 
@@ -72,6 +71,12 @@ Run:
 python3 path/to/wechat-mp-html/scripts/generate_wechat_mp_html.py article.json --out-dir output-dir
 ```
 
+For advanced source-mode workflows, run:
+
+```bash
+python3 path/to/wechat-mp-html/scripts/generate_wechat_mp_html.py article.json --out-dir output-dir --outputs both
+```
+
 ## Formatting Rules
 
 - Keep the original paragraph boundaries. Do not shorten paragraphs just to improve rhythm.
@@ -87,4 +92,4 @@ python3 path/to/wechat-mp-html/scripts/generate_wechat_mp_html.py article.json -
 ## Resources
 
 - `references/wechat-mp-html-compat.md`: WeChat-compatible HTML rules and source notes.
-- `scripts/generate_wechat_mp_html.py`: Deterministic generator for the preview file and source snippet.
+- `scripts/generate_wechat_mp_html.py`: Deterministic generator for the preview file and optional source snippet.

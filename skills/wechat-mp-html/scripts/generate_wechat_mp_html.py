@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Generate WeChat Official Account HTML preview and source snippet.
+"""Generate WeChat Official Account HTML preview and optional source snippet.
 
-Input is a UTF-8 JSON article structure prepared by Codex. Output is:
+Input is a UTF-8 JSON article structure prepared by Codex. By default, output is:
 - 公众号 HTML 预览版.html
-- 公众号源码片段.txt
+
+Use --outputs both or --outputs snippet for advanced source-mode workflows.
 """
 
 from __future__ import annotations
@@ -489,6 +490,12 @@ def main() -> int:
     parser.add_argument("--out-dir", default=".", help="Directory for generated files")
     parser.add_argument("--preview-name", default=PREVIEW_NAME)
     parser.add_argument("--snippet-name", default=SNIPPET_NAME)
+    parser.add_argument(
+        "--outputs",
+        choices=("preview", "both", "snippet"),
+        default="preview",
+        help="Files to write. Default: preview HTML only.",
+    )
     args = parser.parse_args()
 
     input_path = Path(args.article_json)
@@ -501,15 +508,19 @@ def main() -> int:
 
     snippet = render_snippet(article)
     warnings = validate_snippet(snippet)
-    preview = render_preview(snippet, clean_text(article.get("title")))
 
     snippet_path = out_dir / args.snippet_name
     preview_path = out_dir / args.preview_name
-    snippet_path.write_text(snippet, encoding="utf-8")
-    preview_path.write_text(preview, encoding="utf-8")
 
-    print(f"Wrote: {preview_path}")
-    print(f"Wrote: {snippet_path}")
+    if args.outputs in {"preview", "both"}:
+        preview = render_preview(snippet, clean_text(article.get("title")))
+        preview_path.write_text(preview, encoding="utf-8")
+        print(f"Wrote: {preview_path}")
+
+    if args.outputs in {"snippet", "both"}:
+        snippet_path.write_text(snippet, encoding="utf-8")
+        print(f"Wrote: {snippet_path}")
+
     for warning in warnings:
         print(f"WARNING: {warning}", file=sys.stderr)
     return 0

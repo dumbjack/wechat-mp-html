@@ -14,11 +14,14 @@ Primary references:
 - https://developers.weixin.qq.com/doc/service/api/material/permanent/api_uploadimage.html
 - https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/Adding_Permanent_Assets.html
 
-## Required Output Types
+## Output Types
 
-Generate both files unless the user asks for only one:
+Generate the preview HTML by default:
 
 - `公众号 HTML 预览版.html`: complete browser preview with `doctype`, `html`, `head`, `body`, `style`, and `script`. The toolbar may contain "复制全文" and "只选择全文" buttons.
+
+Generate the source snippet only when the user explicitly asks for source mode, 135 Editor, Xiumi, Yiban, API publishing, or debugging:
+
 - `公众号源码片段.txt`: body-only HTML snippet for source-mode copy. It must not contain `doctype`, `html`, `head`, `body`, `script`, or `style` tags.
 
 ## Safe Body Tags
